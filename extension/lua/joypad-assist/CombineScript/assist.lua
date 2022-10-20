@@ -21,4 +21,3 @@ function script.update(dt)
     end
   end
 end
-

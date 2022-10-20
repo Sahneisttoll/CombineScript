@@ -1,7 +1,6 @@
 local modes = {
   require('modes/race'),
-  require('modes/drift'),
-  require('modes/racenew')
+  require('modes/drift')
 }
 
 local currentMode = modes[tonumber(ac.storage.mode)] or modes[1]
@@ -21,7 +20,5 @@ function script.update(dt)
       ac.setSystemMessage('Gamepad mode', 'Switched to '..currentMode.name)
     end
   end
-  ac.debug("1",stringify(newModeIndex))
-  ac.debug("2",stringify(currentMode))
 end
 

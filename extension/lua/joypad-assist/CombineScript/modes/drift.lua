@@ -26,7 +26,7 @@ ac.debug("Drift_Dualsense5_ABS",Dualsense5_ABS)
 local dtSkip = 0 -- This is a debugging feature; increasing the value will reduce the frame rate of the script. (For example, to reduce the frame rate by 1/10, enter 10.)
 local dtSkipCount = dtSkip
 
-local function update(dt)
+local function update(dt)	
 	local state = ac.getJoypadState()
 	local steerSelf = -state.ffb
 	local steerForce = state.steerStickX
@@ -64,7 +64,7 @@ local function update(dt)
 		state.clutch = 0
 	end
 	if stopAutoClutch ~= 0 and state.clutch == 1 and state.gas > 0.1 then
-		state.clutch = math.clamp((car.rpm - 1000) / 3500, 0, 1)
+		state.clutch = math.clamp((car.rpm - 1000) / 750, 0, 1)
 	end
 	if handbrakeClutchLink ~= 0 and state.handbrake > 0 then
 		state.clutch = 1 - state.handbrake

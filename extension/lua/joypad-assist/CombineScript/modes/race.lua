@@ -28,7 +28,7 @@ local dtSkipCount = dtSkip
 
 local function update(dt)
 	local state = ac.getJoypadState()
-	local steerSelf = -state.ffb
+	local steerSelf = -state.ffb	--/5	--understeering much? uncomment(remove --) before the /5
 	local steerForce = state.steerStick
 	local AngVelY = state.localAngularVelocity.y / 1
 	local ndSlip = (state.ndSlipL + state.ndSlipR) / 2
@@ -64,7 +64,7 @@ local function update(dt)
 		state.clutch = 0
 	end
 	if stopAutoClutch ~= 0 and state.clutch == 1 and state.gas > 0.1 then
-		state.clutch = math.clamp((car.rpm - 1000) / 3500, 0, 1)
+		state.clutch = math.clamp((car.rpm - 1000) / 750, 0, 1)
 	end
 	if handbrakeClutchLink ~= 0 and state.handbrake > 0 then
 		state.clutch = 1 - state.handbrake

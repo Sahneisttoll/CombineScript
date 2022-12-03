@@ -27,8 +27,11 @@ local dtSkip = 0.001 -- This is a debugging feature; increasing the value will r
 local dtSkipCount = dtSkip
 
 local function update(dt)
+
+	local car = ac.getCar(0)
+
 	local state = ac.getJoypadState()
-	local steerSelf = -state.ffb	--/5	--understeering much? uncomment(remove --) before the /5
+	local steerSelf = -state.ffb	-- / 5
 	local steerForce = state.steerStick
 	local AngVelY = state.localAngularVelocity.y / 1
 	local ndSlip = (state.ndSlipL + state.ndSlipR) / 2
@@ -40,14 +43,18 @@ local function update(dt)
 	end
 	dtSkipCount = 0
 
-	-- If you want to add or subtract a value each time the process is executed, put it between here and "apply" and multiply the value by "dtDebug".
-	steerForce = steerForce * (2 - math.sign(steerForce) * steerSelf)
-	steerForce = steerForce - steerForce * math.min(ndSlip / 3 * (1 + math.sign(steerForce) * steerAngle - 0.5), 1)
-	AngVelY = AngVelY + AngVelY * math.abs(steerSelf)
 
-	steerVelocity = steerForce + steerSelf + AngVelY
-	steerAngle = math.clamp(steerAngle + steerVelocity * dtDebug, -1, 1)
+	if car.engagedGear >= 0 then
+		-- If you want to add or subtract a value each time the process is executed, put it between here and "apply" and multiply the value by "dtDebug".
+		steerForce = steerForce * (2 - math.sign(steerForce) * steerSelf)
+		steerForce = steerForce - steerForce * math.min(ndSlip / 3 * (1 + math.sign(steerForce) * steerAngle - 0.5), 1) -- normal
+		AngVelY = AngVelY + AngVelY * math.abs(steerSelf)
 
+		steerVelocity = steerForce + steerSelf + AngVelY
+		steerAngle = math.clamp(steerAngle + steerVelocity * dtDebug, -1, 1)
+	else
+		steerAngle = math.clamp(steerForce + steerForce * dtDebug , -1, 1)
+	end
 	::apply::
 
 	state.steer = steerAngle
@@ -92,9 +99,9 @@ local function update(dt)
 	end
 
 	--[[
-  	ac.debug("1MINIMUM", rpm)
-  	ac.debug('2car.rpm', car.rpm)
-  	ac.debug("3state.clutch",state.clutch)
+  	ac.debug("MINIMUM", rpm)
+  	ac.debug('car.rpm', car.rpm)
+  	ac.debug("state.clutch",state.clutch)
 	ac.debug('state.ffb', state.ffb)
 	ac.debug('state.gForces.x', state.gForces.x)
 	ac.debug('state.localAngularVelocity.y', state.localAngularVelocity.y)
@@ -103,6 +110,7 @@ local function update(dt)
 	ac.debug('state.localVelocity.z', state.localVelocity.z) -- forwards/backwards speed of a car relative to car
 	ac.debug('state.ndSlipL', state.ndSlipL) -- slipping for left front tyre
 	ac.debug('state.ndSlipR', state.ndSlipR) -- slipping for right front tyre
+	ac.debug("state.ndSlip",ndSlip)
 	ac.debug('state.steer', state.steer)
 	ac.debug('state.steerStick', state.steerStick)
 	ac.debug('steerVelocity', steerVelocity)

@@ -26,7 +26,10 @@ ac.debug("Drift_Dualsense5_ABS",Dualsense5_ABS)
 local dtSkip = 0 -- This is a debugging feature; increasing the value will reduce the frame rate of the script. (For example, to reduce the frame rate by 1/10, enter 10.)
 local dtSkipCount = dtSkip
 
-local function update(dt)	
+local function update(dt)
+	
+	local car = ac.getCar(0)
+
 	local state = ac.getJoypadState()
 	local steerSelf = -state.ffb
 	local steerForce = state.steerStickX
@@ -40,14 +43,17 @@ local function update(dt)
 	end
 	dtSkipCount = 0
 
-	-- If you want to add or subtract a value each time the process is executed, put it between here and "apply" and multiply the value by "dtDebug".
-	steerForce = steerForce * (2 - math.sign(steerForce) * steerSelf)
-	steerForce = steerForce - steerForce * math.min(ndSlip / 5 * (1 + math.sign(steerForce) * steerAngle), 1)
-	AngVelY = AngVelY + AngVelY * math.abs(steerSelf)
+	if car.engagedGear >= 0 then
+		-- If you want to add or subtract a value each time the process is executed, put it between here and "apply" and multiply the value by "dtDebug".
+		steerForce = steerForce * (2 - math.sign(steerForce) * steerSelf)
+		steerForce = steerForce - steerForce * math.min(ndSlip / 5 * (1 + math.sign(steerForce) * steerAngle), 1)
+		AngVelY = AngVelY + AngVelY * math.abs(steerSelf)
 
-	steerVelocity = steerForce + steerSelf + AngVelY
-	steerAngle = math.clamp(steerAngle + steerVelocity * 450 / state.steerLock * dtDebug, -1, 1)
-
+		steerVelocity = steerForce + steerSelf + AngVelY
+		steerAngle = math.clamp(steerAngle + steerVelocity * 450 / state.steerLock * dtDebug, -1, 1)
+	else
+		steerAngle = math.clamp(steerForce + steerForce * dtDebug , -1, 1)
+	end
 	::apply::
 
 	state.steer = steerAngle

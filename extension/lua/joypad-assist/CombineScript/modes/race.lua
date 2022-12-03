@@ -66,7 +66,6 @@ local function update(dt)
 	end
 
 	--configureable stuff
-	local car = ac.getCar(0)
 	if stopAutoClutch ~= 0 and car.rpm < rpm + (rpm / 100) then -- "+ (rpm/100)" to not have stuttery RPMs when standing still
 		state.clutch = 0
 	end

@@ -27,7 +27,7 @@ local dtSkip = 0 -- This is a debugging feature; increasing the value will reduc
 local dtSkipCount = dtSkip
 
 local function update(dt)
-	
+
 	local car = ac.getCar(0)
 
 	local state = ac.getJoypadState()
@@ -65,7 +65,6 @@ local function update(dt)
 	end
 
 	--configureable stuff
-	local car = ac.getCar(0)
 	if stopAutoClutch ~= 0 and car.rpm < rpm + (rpm / 100) then -- "+ (rpm/100)" to not have stuttery RPMs when standing still
 		state.clutch = 0
 	end
